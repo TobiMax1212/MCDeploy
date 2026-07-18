@@ -1,0 +1,52 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    restart: always
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prometheus
+    restart: always
+  web_server:
+    image: nginx
+    volumes:
+      - ./templates:/etc/nginx/templates
+    ports:
+      - '8080:80'
+    restart: always
+  nginx_exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    command:
+      - '-nginx.scrape-uri=http://web_server:80/nginx_status'
+    ports:
+      - '9113:9113'
+    depends_on:
+      - web_server
+    restart: always
+  ansible:
+    build: .
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+      - ../ansible:/ansible
+    entrypoint: ["ansible-playbook"]
+    command: ["deploy.yaml", "-i", "inventory.ini"]
+    labels:
+      ofelia.enabled: "false"
+  scheduler:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - ansible
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      ofelia.job-run.ansible-nightly.schedule: "0 0 2 * * *"
+      ofelia.job-run.ansible-nightly.container: "ansible"
