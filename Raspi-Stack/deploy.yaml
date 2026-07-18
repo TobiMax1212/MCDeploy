@@ -1,0 +1,5 @@
+- hosts: local
+  tasks:
+    - name: Test-Ausgabe
+      debug:
+        msg: "Ansible läuft erfolgreich im Container!"

@@ -31,4 +31,22 @@ services:
     depends_on:
       - web_server
     restart: always
-
+  ansible:
+    build: .
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+      - ./:/ansible
+    entrypoint: ["ansible-playbook"]
+    command: ["deploy.yaml", "-i", "inventory.ini"]
+    labels:
+      ofelia.enabled: "false"
+  scheduler:
+    image: mcuadros/ofelia:latest
+    depends_on:
+      - ansible
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      ofelia.job-run.ansible-nightly.schedule: "0 0 2 * * *"
+      ofelia.job-run.ansible-nightly.container: "ansible"
