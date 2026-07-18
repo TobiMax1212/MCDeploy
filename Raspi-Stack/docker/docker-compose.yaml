@@ -35,7 +35,7 @@ services:
     build: .
     volumes:
       - ~/.ssh:/root/.ssh:ro
-      - ./:/ansible
+      - ../ansible:/ansible
     entrypoint: ["ansible-playbook"]
     command: ["deploy.yaml", "-i", "inventory.ini"]
     labels:
