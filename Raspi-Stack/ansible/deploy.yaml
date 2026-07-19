@@ -46,7 +46,7 @@
         dest: /tmp
         remote_src: true
     
-    - name: node_exporter Binary an richtige Stelle kopieren
+    - name: node_exporter | Binary copy to the right place
       copy:
         src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
         dest: /usr/local/bin/node_exporter
@@ -99,3 +99,19 @@
       systemd:
         name: node_exporter
         state: restarted
+
+    #--------------------------------------------------------
+    # Phase 4: Install S.M.A.R.T. Exporter
+    #--------------------------------------------------------
+    - name: smartctl install | Download and unzip S.M.A.R.T. tool
+      unarchive:
+        src: "https://github.com/prometheus-community/smartctl_exporter/releases/download/v0.8.0/smartctl_exporter-0.8.0.linux-amd64.tar.gz"
+        dst: /tmp
+        remote_src: true
+
+    - name: smartctl | Binary copy to the right place
+      copy:
+        src: "/tmp/smartctl_exporter-0.8.0.linux-amd64/smartctl_exporter"
+        dest: /usr/local/bin/smartctl_exporter
+        mode: '0755'
+        remote_src: true
