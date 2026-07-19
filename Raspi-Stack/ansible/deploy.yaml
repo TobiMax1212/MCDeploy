@@ -1,5 +1,9 @@
-- hosts: local
+- name: My first play
+  hosts: myhosts
   tasks:
-    - name: Test-Ausgabe
-      debug:
-        msg: "Ansible läuft erfolgreich im Container!"
+   - name: Ping my hosts
+     ansible.builtin.ping:
+
+   - name: Print message
+     ansible.builtin.debug:
+       msg: Hello world
