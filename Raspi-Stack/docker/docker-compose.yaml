@@ -1,4 +1,5 @@
 services:
+
   prometheus:
     image: prom/prometheus
     ports:
@@ -8,6 +9,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
     restart: always
+
   grafana:
     image: grafana/grafana
     ports:
@@ -22,6 +24,7 @@ services:
     ports:
       - '8080:80'
     restart: always
+
   nginx_exporter:
     image: nginx/nginx-prometheus-exporter:latest
     command:
@@ -40,6 +43,7 @@ services:
     command: ["deploy.yaml", "-i", "inventory.ini"]
     labels:
       ofelia.enabled: "false"
+
   scheduler:
     image: mcuadros/ofelia:latest
     depends_on:
