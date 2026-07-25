@@ -1,0 +1,10 @@
+---
+- name: OpenJDK | Install OpenJDK
+  ansible.builtin.apt:
+    name: "openjdk-{{ java_openjdk_version }}-jdk"
+    state: present
+    update-cache: true
+
+- name: OpenJDK | Set default Java version
+  ansible.builtin.command: update-alternatives --set java /usr/lib/jvm/java-{{ java_openjdk_version }}-openjdk-amd64/bin/java
+  changed_when: false

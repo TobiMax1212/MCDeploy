@@ -4,3 +4,9 @@
   become: true
   roles:
     - prometheus_exporter
+
+- name: Deploy Java
+  hosts: TobisDesktop
+  become: true
+  roles:
+    - java
