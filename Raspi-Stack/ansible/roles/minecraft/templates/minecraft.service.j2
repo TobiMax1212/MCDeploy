@@ -1,0 +1,15 @@
+[Unit]
+Description=Minecraft NeoForge Server (MC {{ minecraft_forge_version }})
+After=network.target
+
+[Service]
+Type=simple
+User={{ minecraft_forge_user }}
+Group={{ minecraft_forge_user }}
+WorkingDirectory={{ minecraft_forge_install_dir }}
+ExecStart=/bin/bash run.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

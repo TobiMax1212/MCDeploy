@@ -1,12 +1,18 @@
 ---
 - name: Deploy Prometheus Exporter
-  hosts: TobisDesktop
+  hosts: TobisServer
   become: true
   roles:
     - prometheus_exporter
 
 - name: Deploy Java
-  hosts: TobisDesktop
+  hosts: TobisServer
   become: true
   roles:
     - java
+
+- name: Deploy Minecraft Server
+  hosts: TobisServer
+  become: true
+  roles:
+    - minecraft

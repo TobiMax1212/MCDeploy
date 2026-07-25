@@ -1,0 +1,5 @@
+---
+- name: Restart Minecraft Service
+  ansible.builtin.systemd:
+    name: "minecraft"
+    state: restarted
