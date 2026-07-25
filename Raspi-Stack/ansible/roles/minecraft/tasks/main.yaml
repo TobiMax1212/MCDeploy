@@ -1,0 +1,78 @@
+---
+- name: Minecraft Forge | Ensure ACL support is installed
+  ansible.builtin.apt:
+    name: acl
+    state: present
+
+- name: Minecraft Forge | Create service user
+  ansible.builtin.user:
+    name: "{{ minecraft_forge_user }}"
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: Minecraft Forge | Create installation directory
+  ansible.builtin.file:
+    path: "{{ minecraft_forge_install_dir }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ minecraft_forge_user }}"
+    group: "{{ minecraft_forge_user }}"
+
+- name: Minecraft Forge | Download NeoForge installer
+  ansible.builtin.get_url:
+    url: >-
+      https://maven.neoforged.net/releases/net/neoforged/neoforge/{{ minecraft_forge_neoforge_version }}/neoforge-{{ minecraft_forge_neoforge_version }}-installer.jar
+    dest: "{{ minecraft_forge_install_dir }}/installer.jar"
+    mode: "0644"
+    owner: "{{ minecraft_forge_user }}"
+    group: "{{ minecraft_forge_user }}"
+
+- name: Minecraft Forge | Run NeoForge installer
+  ansible.builtin.command: java -jar installer.jar --installServer
+  become: true
+  become_user: "{{ minecraft_forge_user }}"
+  args:
+    chdir: "{{ minecraft_forge_install_dir }}"
+    creates: "{{ minecraft_forge_install_dir }}/run.sh"
+
+- name: Minecraft Forge | Accept EULA
+  ansible.builtin.copy:
+    dest: "{{ minecraft_forge_install_dir }}/eula.txt"
+    content: "eula=true\n"
+    owner: "{{ minecraft_forge_user }}"
+    group: "{{ minecraft_forge_user }}"
+    mode: "0644"
+
+- name: Minecraft Forge | Deploy JVM args
+  ansible.builtin.template:
+    src: user_jvm_args.txt.j2
+    dest: "{{ minecraft_forge_install_dir }}/user_jvm_args.txt"
+    mode: "0644"
+    owner: "{{ minecraft_forge_user }}"
+    group: "{{ minecraft_forge_user }}"
+  notify: Restart Minecraft Service
+
+- name: Minecraft Forge | Deploy server.properties (RCON config)
+  ansible.builtin.template:
+    src: server.properties.j2
+    dest: "{{ minecraft_forge_install_dir }}/server.properties"
+    mode: "0644"
+    owner: "{{ minecraft_forge_user }}"
+    group: "{{ minecraft_forge_user }}"
+    force: false
+  notify: Restart Minecraft Service
+
+- name: Minecraft Forge | Create systemd service file
+  ansible.builtin.template:
+    src: minecraft.service.j2
+    dest: /etc/systemd/system/minecraft.service
+    mode: "0644"
+  notify: Restart Minecraft Service
+
+- name: Minecraft Forge | Enable and start service
+  ansible.builtin.systemd:
+    name: minecraft
+    enabled: true
+    state: started
+    daemon_reload: true

@@ -1,1 +1,11 @@
 ---
+minecraft_forge_install_dir: /opt/minecraft
+minecraft_forge_neoforge_version: "21.1.90"
+minecraft_forge_version: "1.21.1"
+minecraft_forge_heap_size: "12G"
+minecraft_forge_user: minecraft
+
+minecraft_forge_rcon_enabled: true
+minecraft_forge_rcon_port: 25575
+minecraft_forge_rcon_password: "CHANGE_ME"
+minecraft_forge_whitelist: true
