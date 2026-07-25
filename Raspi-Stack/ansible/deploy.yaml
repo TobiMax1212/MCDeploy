@@ -1,0 +1,6 @@
+---
+- name: Deploy Prometheus Exporter
+  hosts: TobisDesktop
+  become: true
+  roles:
+    - prometheus_exporter
