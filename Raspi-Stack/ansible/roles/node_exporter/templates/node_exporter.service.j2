@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/opt/node_exporter/node_exporter --web.listen-address=:{{ prometheus_exporter_port }}
+ExecStart=/opt/node_exporter/node_exporter --web.listen-address=:{{ node_exporter_port }}
 Restart=always
 RestartSec=5
 
