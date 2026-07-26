@@ -7,5 +7,5 @@ minecraft_forge_user: minecraft
 
 minecraft_forge_rcon_enabled: true
 minecraft_forge_rcon_port: 25575
-minecraft_forge_rcon_password: "YOUR_PASSWORD_WILL_BE_SET_BY_DEPLOY"
+minecraft_forge_rcon_password: "CHANGE_BY_DEPLOY"
 minecraft_forge_whitelist: true

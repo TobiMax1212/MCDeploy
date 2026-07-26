@@ -46,17 +46,12 @@ echo
 
 # --- group_vars/main_server.yaml aktualisieren ---
 MAIN_SERVER_FILE="${ANSIBLE_DIR}/inventory/group_vars/main_server.yaml"
+CONTAINER_KEY_PATH="/root/.ssh/$(basename "$SSH_KEY_PATH")"
 
 if grep -q "^ansible_ssh_private_key_file:" "$MAIN_SERVER_FILE"; then
-    sed -i "s#^ansible_ssh_private_key_file:.*#ansible_ssh_private_key_file: ${SSH_KEY_PATH}#" "$MAIN_SERVER_FILE"
+    sed -i "s#^ansible_ssh_private_key_file:.*#ansible_ssh_private_key_file: ${CONTAINER_KEY_PATH}#" "$MAIN_SERVER_FILE"
 else
-    echo "ansible_ssh_private_key_file: ${SSH_KEY_PATH}" >> "$MAIN_SERVER_FILE"
-fi
-
-if grep -q "^ansible_host:" "$MAIN_SERVER_FILE"; then
-    sed -i "s#^ansible_host:.*#ansible_host: ${SERVER_IP}#" "$MAIN_SERVER_FILE"
-else
-    echo "ansible_host: ${SERVER_IP}" >> "$MAIN_SERVER_FILE"
+    echo "ansible_ssh_private_key_file: ${CONTAINER_KEY_PATH}" >> "$MAIN_SERVER_FILE"
 fi
 
 # --- minecraft_forge_rcon_password aktualisieren ---
