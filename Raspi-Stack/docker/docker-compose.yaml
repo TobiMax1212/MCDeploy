@@ -34,13 +34,15 @@ services:
     depends_on:
       - web_server
     restart: always
+
   ansible:
     build: .
+    working_dir: /ansible
     volumes:
       - ~/.ssh:/root/.ssh:ro
       - ../ansible:/ansible
     entrypoint: ["ansible-playbook"]
-    command: ["deploy.yaml", "-i", "inventory.ini"]
+    command: ["deploy.yaml", "-i", "inventory/inventory.ini"]
     labels:
       ofelia.enabled: "false"
 

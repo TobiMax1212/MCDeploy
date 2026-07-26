@@ -1,0 +1,12 @@
+[Unit]
+Description=Prometheus SMART Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/smartctl_exporter --web.listen-address=:{{ smartctl_exporter_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -3,7 +3,9 @@
   hosts: TobisServer
   become: true
   roles:
-    - prometheus_exporter
+    - node_exporter
+    - smartctl_exporter
+    - ipmi_exporter
 
 - name: Deploy Java
   hosts: TobisServer
