@@ -1,0 +1,72 @@
+---
+- name: IPMI Exporter | Install build dependencies
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - git
+      - libfreeipmi-dev
+      - freeipmi-tools
+      - ipmitool
+    state: present
+    update_cache: true
+
+- name: IPMI Exporter | Load IPMI kernel modules
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ipmi_si
+    - ipmi_devintf
+
+- name: IPMI Exporter | Create install directory
+  ansible.builtin.file:
+    path: /opt/ipmi_exporter
+    state: directory
+    mode: "0755"
+
+- name: IPMI Exporter | Clone repository
+  ansible.builtin.git:
+    repo: https://github.com/prometheus-community/ipmi_exporter.git
+    dest: /opt/ipmi_exporter/src
+    version: "v{{ ipmi_exporter_version }}"
+
+- name: IPMI Exporter | Build binary
+  ansible.builtin.command: make build
+  args:
+    chdir: /opt/ipmi_exporter/src
+    creates: /opt/ipmi_exporter/src/ipmi_exporter
+  environment:
+    PATH: "/usr/local/go/bin:{{ ansible_facts['env']['PATH'] }}"
+
+- name: IPMI Exporter | Install binary
+  ansible.builtin.copy:
+    src: /opt/ipmi_exporter/src/ipmi_exporter
+    dest: /usr/local/bin/ipmi_exporter
+    mode: "0755"
+    remote_src: true
+
+- name: Ipmi Exporter | Deploy exporter config
+  ansible.builtin.copy:
+    dest: /etc/ipmi_exporter.yml
+    content: |
+      modules:
+        default:
+          collectors:
+            - ipmi
+            - sm-lan-mode
+    mode: "0644"
+  notify: Restart ipmi_exporter
+
+- name: IPMI Exporter | Deploy systemd service
+  ansible.builtin.template:
+    src: ipmi_exporter.service.j2
+    dest: /etc/systemd/system/ipmi_exporter.service
+    mode: "0644"
+  notify: Restart ipmi_exporter
+
+- name: IPMI Exporter | Enable and start service
+  ansible.builtin.systemd:
+    name: ipmi_exporter
+    enabled: true
+    state: started
+    daemon_reload: true

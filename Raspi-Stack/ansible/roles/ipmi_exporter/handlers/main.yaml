@@ -1,0 +1,5 @@
+---
+- name: Restart ipmi_exporter
+  ansible.builtin.systemd:
+    name: ipmi_exporter
+    state: restarted

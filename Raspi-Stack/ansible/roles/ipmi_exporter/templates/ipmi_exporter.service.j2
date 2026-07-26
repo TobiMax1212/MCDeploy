@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus IPMI Exporter
+After=network.target
+
+[Service]
+Type=simple
+Environment=HOME=/root
+ExecStart=/usr/local/bin/ipmi_exporter --config.file=/etc/ipmi_exporter.yml --web.listen-address=:{{ ipmi_exporter_port }}
+Restart=always
+RestartSec=5
+
+
+[Install]
+WantedBy=multi-user.target
