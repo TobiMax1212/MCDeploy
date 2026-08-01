@@ -62,12 +62,12 @@ sed -i "s#^minecraft_forge_rcon_password:.*#minecraft_forge_rcon_password: \"${R
 echo "Konfiguration aktualisiert."
 
 # --- Docker Compose Stack starten ---
-export SSH_DIR="$(dirname "$SSH_KEY_PATH")"
+echo "SSH_DIR=$(dirname "$SSH_KEY_PATH")" > "${DOCKER_DIR}/.env"
 
 read -p "Docker-Stack jetzt starten (docker compose up -d)? [y/N]: " START_DOCKER
 if [[ "$START_DOCKER" =~ ^[Yy]$ ]]; then
     echo "Starte Docker-Container..."
-    (cd "$DOCKER_DIR" && sudo docker compose up -d)
+    (cd "$DOCKER_DIR" && sudo -E docker compose up -d)
 else
     echo "Docker-Stack wird übersprungen."
 fi
