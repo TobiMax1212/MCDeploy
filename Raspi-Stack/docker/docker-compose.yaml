@@ -39,7 +39,7 @@ services:
     build: .
     working_dir: /ansible
     volumes:
-      - ~/.ssh:/root/.ssh:ro
+      - ${SSH_DIR}:/root/.ssh:ro
       - ../ansible:/ansible
     environment:
       - ANSIBLE_HOST_KEY_CHECKING=False
