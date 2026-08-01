@@ -1,6 +1,6 @@
 ---
 minecraft_forge_install_dir: /opt/minecraft
-minecraft_forge_neoforge_version: "21.1.90"
+minecraft_forge_neoforge_version: "21.1.248"
 minecraft_forge_version: "1.21.1"
 minecraft_forge_heap_size: "12G"
 minecraft_forge_user: minecraft
