@@ -6,6 +6,7 @@ services:
       - '9090:9090'
     volumes:
       - ./prometheus:/etc/prometheus
+      - ./secrets:/etc/prometheus/secrets:ro
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
     restart: always

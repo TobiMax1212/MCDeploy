@@ -14,3 +14,9 @@ scrape_configs:
     static_configs: [{ targets: ['192.168.178.88:9256'] }]
   - job_name: 'minecraft'
     static_configs: [{ targets: ['192.168.178.88:19565'] }]
+  - job_name: 'homeassistant'
+    metrics_path: /api/prometheus
+    scheme: http
+    bearer_token_file: /etc/prometheus/secrets/ha_token
+    static_configs:
+      - targets: ['192.168.178.39:8123']

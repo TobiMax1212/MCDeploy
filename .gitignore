@@ -5,3 +5,4 @@
 .env
 Raspi-Stack/ansible/group_vars/main_server.yaml
 .ansible/
+secrets/
