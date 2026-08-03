@@ -18,6 +18,9 @@ services:
     depends_on:
       - prometheus
     restart: always
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - grafana-data:/var/lib/grafana
   web_server:
     image: nginx
     volumes:
