@@ -18,6 +18,8 @@ services:
     depends_on:
       - prometheus
     restart: always
+    environment:
+      - GF_SMTP_PASSWORD=${GRAFANA_SMTP_PASSWORD}
     volumes:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - grafana-data:/var/lib/grafana
@@ -28,7 +30,6 @@ services:
     ports:
       - '8080:80'
     restart: always
-
   nginx_exporter:
     image: nginx/nginx-prometheus-exporter:latest
     command:
