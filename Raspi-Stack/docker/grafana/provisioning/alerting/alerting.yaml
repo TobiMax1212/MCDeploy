@@ -87,7 +87,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: infra-ram-usage-high
     title: RAM Usage High
     condition: C
@@ -170,7 +170,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: infra-disk-space-low
     title: Disk Space Low
     condition: C
@@ -508,7 +508,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: hw-cpu-temp-critical
     title: CPU Temp Critical
     condition: C
@@ -758,7 +758,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: hw-ipmi-fan-low
     title: IPMI Fan Speed Low
     condition: C
@@ -1012,7 +1012,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-tps-critical
     title: TPS Critical
     condition: C
@@ -1095,7 +1095,7 @@ groups:
     labels:
       severity: critical
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Minecraft-Critical
   - uid: mc-tick-p95-high
     title: Tick Duration p95 High
     condition: C
@@ -1178,7 +1178,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-overworld-tick-high
     title: Overworld Tick Duration High
     condition: C
@@ -1261,7 +1261,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-heap-high
     title: JVM Heap Usage High
     condition: C
@@ -1344,7 +1344,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-heap-critical
     title: JVM Heap Usage Critical
     condition: C
@@ -1427,7 +1427,7 @@ groups:
     labels:
       severity: critical
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Minecraft-Critical
   - uid: mc-jvm-oldgen-high
     title: G1 Old Gen Usage High
     condition: C
@@ -1510,7 +1510,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-gc-ratio-high
     title: GC Time Ratio High
     condition: C
@@ -1593,7 +1593,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-oldgen-gc
     title: Old Gen GC Triggered
     condition: C
@@ -1676,7 +1676,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-threads-high
     title: JVM Thread Count High
     condition: C
@@ -1759,7 +1759,7 @@ groups:
     labels:
       severity: warning
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Warning
   - uid: mc-jvm-deadlock
     title: JVM Deadlock Detected
     condition: C
@@ -1842,7 +1842,7 @@ groups:
     labels:
       severity: critical
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Minecraft-Critical
   - uid: mc-process-down
     title: Minecraft Process Down
     condition: C
@@ -1926,4 +1926,4 @@ groups:
     labels:
       severity: critical
     notification_settings:
-      receiver: Grafana-Critical
+      receiver: Grafana-Minecraft-Critical
