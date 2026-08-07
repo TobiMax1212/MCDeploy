@@ -691,7 +691,7 @@ groups:
           type: prometheus
           uid: cfuhki39ptv5sf
         editorMode: code
-        expr: smartctl_device_attribute{attribute_id="5", attribute_name="Reallocated_Sector_Ct"}
+        expr: smartctl_device_attribute{attribute_id="5", attribute_name="Reallocated_Sector_Ct", attribute_value_type="raw"}
         instant: true
         intervalMs: 1000
         maxDataPoints: 43200
@@ -754,7 +754,7 @@ groups:
     for: 5m
     annotations:
       summary: Reallocated Sectors erkannt
-      description: SMART-Attribut Reallocated_Sector_Ct > 0, Frühwarnung für Disk-Degradation.
+      description: SMART-Attribut Reallocated_Sector_Ct (Rohwert) > 0, Frühwarnung für Disk-Degradation.
     labels:
       severity: warning
     notification_settings:
