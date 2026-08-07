@@ -16,6 +16,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100
         instant: true
@@ -96,6 +99,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
         instant: true
@@ -176,6 +182,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100
         instant: true
@@ -256,6 +265,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100
         instant: true
@@ -336,6 +348,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: up{job="server-node"}
         instant: true
@@ -421,6 +436,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: max(node_hwmon_temp_celsius{chip="platform_coretemp_0"})
         instant: true
@@ -502,6 +520,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: max(node_hwmon_temp_celsius{chip="platform_coretemp_0"})
         instant: true
@@ -583,6 +604,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: smartctl_device_smart_status
         instant: true
@@ -663,6 +687,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: smartctl_device_attribute{attribute_id="5", attribute_name="Reallocated_Sector_Ct"}
         instant: true
@@ -743,6 +770,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: ipmi_fan_speed_rpm
         instant: true
@@ -823,6 +853,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: ipmi_power_supply_status
         instant: true
@@ -908,6 +941,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: clamp_max(1 / (rate(mc_server_tick_seconds_sum[5m]) / rate(mc_server_tick_seconds_count[5m])), 20)
         instant: true
@@ -988,6 +1024,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: clamp_max(1 / (rate(mc_server_tick_seconds_sum[5m]) / rate(mc_server_tick_seconds_count[5m])), 20)
         instant: true
@@ -1068,6 +1107,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: histogram_quantile(0.95, rate(mc_server_tick_seconds_bucket[5m]))
         instant: true
@@ -1148,6 +1190,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: histogram_quantile(0.95, rate(mc_dimension_tick_seconds_bucket{name="overworld"}[5m]))
         instant: true
@@ -1228,6 +1273,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) * 100
         instant: true
@@ -1308,6 +1356,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) * 100
         instant: true
@@ -1388,6 +1439,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: (jvm_memory_pool_bytes_used{pool="G1 Old Gen"} / jvm_memory_pool_bytes_max{pool="G1 Old Gen"}) * 100
         instant: true
@@ -1468,6 +1522,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: rate(jvm_gc_collection_seconds_sum[5m])
         instant: true
@@ -1548,6 +1605,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: increase(jvm_gc_collection_seconds_count{gc="G1 Old Generation"}[5m])
         instant: true
@@ -1628,6 +1688,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: jvm_threads_current
         instant: true
@@ -1708,6 +1771,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: jvm_threads_deadlocked
         instant: true
@@ -1788,6 +1854,9 @@ groups:
         to: 0
       datasourceUid: cfuhki39ptv5sf
       model:
+        datasource:
+          type: prometheus
+          uid: cfuhki39ptv5sf
         editorMode: code
         expr: up{job="minecraft"}
         instant: true
@@ -1853,6 +1922,7 @@ groups:
     annotations:
       summary: Minecraft-Server nicht erreichbar
       description: Der Minecraft-Metrics-Endpoint antwortet nicht mehr (Prozess-Crash oder Exporter down).
+      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/minecraft-process-down.md
     labels:
       severity: critical
     notification_settings:
