@@ -62,3 +62,6 @@ services:
     labels:
       ofelia.job-run.ansible-nightly.schedule: "0 0 2 * * *"
       ofelia.job-run.ansible-nightly.container: "ansible"
+
+volumes:
+  grafana-data:
