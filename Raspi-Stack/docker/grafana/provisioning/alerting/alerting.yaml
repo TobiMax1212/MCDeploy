@@ -1,0 +1,1859 @@
+apiVersion: 1
+groups:
+- orgId: 1
+  name: infra-1m
+  folder: 'TobisServer: Infra Alerts'
+  interval: 1m
+  rules:
+  - uid: infra-cpu-load-high
+    title: CPU Load High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 20
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: CPU-Auslastung ist hoch
+      description: Idle-CPU liegt unter 20% (d.h. Last > 80%) seit 5 Minuten auf TobisServer.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: infra-ram-usage-high
+    title: RAM Usage High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 90
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: RAM-Nutzung ist hoch
+      description: Verfügbarer Speicher liegt unter 10% auf TobisServer.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: infra-disk-space-low
+    title: Disk Space Low
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 10
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: Freier Speicherplatz wird knapp
+      description: Freier Speicherplatz auf einem Filesystem liegt unter 10%.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: infra-disk-space-critical
+    title: Disk Space Critical
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 5
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: Freier Speicherplatz kritisch niedrig
+      description: Freier Speicherplatz auf einem Filesystem liegt unter 5%. Sofort handeln.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: infra-node-down
+    title: Node Down
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: up{job="server-node"}
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 1
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: TobisServer nicht erreichbar
+      description: node_exporter auf TobisServer antwortet nicht mehr (Prometheus-Scrape fehlgeschlagen).
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+- orgId: 1
+  name: sensors-1m
+  folder: 'TobisServer: Hardware Alerts'
+  interval: 1m
+  rules:
+  - uid: hw-cpu-temp-high
+    title: CPU Temp High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: max(node_hwmon_temp_celsius{chip="platform_coretemp_0"})
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 70
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: CPU-Temperatur ist über 70°C
+      description: Package-/Core-Temperatur liegt über 70°C, Schwelle für Warnung.
+      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/cpu-temp-high.md
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: hw-cpu-temp-critical
+    title: CPU Temp Critical
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: max(node_hwmon_temp_celsius{chip="platform_coretemp_0"})
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 85
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: CPU-Temperatur ist kritisch hoch
+      description: Package-/Core-Temperatur liegt über 85°C, nahe Thermal-Throttling.
+      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/cpu-temp-high.md
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: hw-smart-failure
+    title: SMART Disk Failure Predicted
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: smartctl_device_smart_status
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 1
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: SMART-Health-Check fehlgeschlagen
+      description: Eine Disk meldet einen fehlgeschlagenen SMART-Health-Status (0 = failing).
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: hw-smart-reallocated-sectors
+    title: Disk Reallocated Sectors Rising
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: smartctl_device_attribute{attribute_id="5", attribute_name="Reallocated_Sector_Ct"}
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: Reallocated Sectors erkannt
+      description: SMART-Attribut Reallocated_Sector_Ct > 0, Frühwarnung für Disk-Degradation.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: hw-ipmi-fan-low
+    title: IPMI Fan Speed Low
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: ipmi_fan_speed_rpm
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 500
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: Lüfterdrehzahl zu niedrig
+      description: IPMI meldet eine Lüfterdrehzahl unter 500 RPM. Überhitzungsrisiko.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: hw-ipmi-psu-status
+    title: IPMI PSU Status
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: ipmi_power_supply_status
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 1
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: Netzteil-Problem erkannt
+      description: IPMI meldet einen nicht-normalen Power-Supply-Status.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+- orgId: 1
+  name: mc-perf-30s
+  folder: 'TobisServer: Minecraft Alerts'
+  interval: 30s
+  rules:
+  - uid: mc-tps-drop
+    title: TPS Drop
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: clamp_max(1 / (rate(mc_server_tick_seconds_sum[5m]) / rate(mc_server_tick_seconds_count[5m])), 20)
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 15
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: TPS ist gesunken
+      description: Server-TPS liegt unter 15, spürbares Lag für Spieler.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-tps-critical
+    title: TPS Critical
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: clamp_max(1 / (rate(mc_server_tick_seconds_sum[5m]) / rate(mc_server_tick_seconds_count[5m])), 20)
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 10
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: TPS ist kritisch niedrig
+      description: Server-TPS liegt unter 10, Server praktisch unspielbar.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-tick-p95-high
+    title: Tick Duration p95 High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: histogram_quantile(0.95, rate(mc_server_tick_seconds_bucket[5m]))
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0.1
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: Tick-Dauer p95 erhöht
+      description: '95% der Ticks dauern unter diesem Wert, aktuell über 100ms (Ziel: 50ms).'
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-overworld-tick-high
+    title: Overworld Tick Duration High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: histogram_quantile(0.95, rate(mc_dimension_tick_seconds_bucket{name="overworld"}[5m]))
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0.1
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: Overworld-Tick-Dauer erhöht
+      description: p95 Tick-Dauer der Overworld-Dimension über 100ms.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-heap-high
+    title: JVM Heap Usage High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 85
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: JVM Heap-Nutzung hoch
+      description: Heap-Auslastung über 85%, GC muss härter arbeiten.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-heap-critical
+    title: JVM Heap Usage Critical
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 95
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 2m
+    annotations:
+      summary: JVM Heap-Nutzung kritisch
+      description: Heap-Auslastung über 95%, OutOfMemoryError/Crash droht.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-oldgen-high
+    title: G1 Old Gen Usage High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: (jvm_memory_pool_bytes_used{pool="G1 Old Gen"} / jvm_memory_pool_bytes_max{pool="G1 Old Gen"}) * 100
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 80
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: G1 Old Gen Nutzung hoch
+      description: Old-Gen-Pool über 80% ausgelastet, möglicher Memory-Leak.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-gc-ratio-high
+    title: GC Time Ratio High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: rate(jvm_gc_collection_seconds_sum[5m])
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0.25
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: Zu viel Zeit in Garbage Collection
+      description: Über 25% der Zeit wird für GC aufgewendet, Ursache für TPS-Drops.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-oldgen-gc
+    title: Old Gen GC Triggered
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: increase(jvm_gc_collection_seconds_count{gc="G1 Old Generation"}[5m])
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 0s
+    annotations:
+      summary: Old-Gen-GC ausgelöst
+      description: Ein Old-Generation-GC-Zyklus wurde ausgelöst, verursacht spürbare Stop-the-World-Pausen.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-threads-high
+    title: JVM Thread Count High
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: jvm_threads_current
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 200
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 5m
+    annotations:
+      summary: Hohe Thread-Anzahl
+      description: Aktuelle Thread-Anzahl über 200, möglicher Thread-Leak durch fehlerhafte Mods.
+    labels:
+      severity: warning
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-jvm-deadlock
+    title: JVM Deadlock Detected
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: PROMETHEUS_UID
+      model:
+        editorMode: code
+        expr: jvm_threads_deadlocked
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: Deadlock erkannt
+      description: Es wurde ein Thread-Deadlock in der JVM erkannt.
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical
+  - uid: mc-process-down
+    title: Minecraft Process Down
+    condition: C
+    data:
+    - refId: A
+      queryType: ''
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: cfuhki39ptv5sf
+      model:
+        editorMode: code
+        expr: up{job="minecraft"}
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: A
+    - refId: B
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - B
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: A
+        reducer: last
+        refId: B
+        type: reduce
+    - refId: C
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: '-100'
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 1
+            type: lt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: '-100'
+        expression: B
+        type: threshold
+        refId: C
+    noDataState: NoData
+    execErrState: Error
+    for: 1m
+    annotations:
+      summary: Minecraft-Server nicht erreichbar
+      description: Der Minecraft-Metrics-Endpoint antwortet nicht mehr (Prozess-Crash oder Exporter down).
+    labels:
+      severity: critical
+    notification_settings:
+      receiver: Grafana-Critical

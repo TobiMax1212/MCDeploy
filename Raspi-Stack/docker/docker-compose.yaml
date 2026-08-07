@@ -10,7 +10,6 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
     restart: always
-
   grafana:
     image: grafana/grafana
     ports:
@@ -22,6 +21,7 @@ services:
       - GF_SMTP_PASSWORD=${GRAFANA_SMTP_PASSWORD}
     volumes:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning/alerting:/etc/grafana/provisioning/alerting
       - grafana-data:/var/lib/grafana
   web_server:
     image: nginx
