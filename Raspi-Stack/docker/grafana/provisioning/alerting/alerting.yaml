@@ -1841,3 +1841,6 @@ groups:
       severity: critical
     notification_settings:
       receiver: Grafana-Minecraft-Critical
+deleteRules:
+  - orgId: 1
+    uid: hw-ipmi-psu-status
