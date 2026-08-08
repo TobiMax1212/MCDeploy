@@ -504,7 +504,6 @@ groups:
     annotations:
       summary: CPU-Temperatur ist über 70°C
       description: Package-/Core-Temperatur liegt über 70°C, Schwelle für Warnung.
-      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/cpu-temp-high.md
     labels:
       severity: warning
     notification_settings:
@@ -588,7 +587,6 @@ groups:
     annotations:
       summary: CPU-Temperatur ist kritisch hoch
       description: Package-/Core-Temperatur liegt über 85°C, nahe Thermal-Throttling.
-      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/cpu-temp-high.md
     labels:
       severity: critical
     notification_settings:
@@ -838,89 +836,6 @@ groups:
     annotations:
       summary: Lüfterdrehzahl zu niedrig
       description: IPMI meldet eine Lüfterdrehzahl unter 500 RPM. Überhitzungsrisiko.
-    labels:
-      severity: critical
-    notification_settings:
-      receiver: Grafana-Critical
-  - uid: hw-ipmi-psu-status
-    title: IPMI PSU Status
-    condition: C
-    data:
-    - refId: A
-      queryType: ''
-      relativeTimeRange:
-        from: 600
-        to: 0
-      datasourceUid: cfuhki39ptv5sf
-      model:
-        datasource:
-          type: prometheus
-          uid: cfuhki39ptv5sf
-        editorMode: code
-        expr: ipmi_power_supply_status
-        instant: true
-        intervalMs: 1000
-        maxDataPoints: 43200
-        refId: A
-    - refId: B
-      relativeTimeRange:
-        from: 600
-        to: 0
-      datasourceUid: '-100'
-      model:
-        conditions:
-        - evaluator:
-            params:
-            - 0
-            type: gt
-          operator:
-            type: and
-          query:
-            params:
-            - B
-          reducer:
-            params: []
-            type: last
-          type: query
-        datasource:
-          type: __expr__
-          uid: '-100'
-        expression: A
-        reducer: last
-        refId: B
-        type: reduce
-    - refId: C
-      relativeTimeRange:
-        from: 600
-        to: 0
-      datasourceUid: '-100'
-      model:
-        conditions:
-        - evaluator:
-            params:
-            - 1
-            type: lt
-          operator:
-            type: and
-          query:
-            params:
-            - C
-          reducer:
-            params: []
-            type: last
-          type: query
-        datasource:
-          type: __expr__
-          uid: '-100'
-        expression: B
-        type: threshold
-        refId: C
-    noDataState: NoData
-    execErrState: Error
-    for: 1m
-    annotations:
-      summary: Netzteil-Problem erkannt
-      description: IPMI meldet einen nicht-normalen Power-Supply-Status.
     labels:
       severity: critical
     notification_settings:
@@ -1922,7 +1837,6 @@ groups:
     annotations:
       summary: Minecraft-Server nicht erreichbar
       description: Der Minecraft-Metrics-Endpoint antwortet nicht mehr (Prozess-Crash oder Exporter down).
-      runbook_url: https://github.com/DEIN_USER/MCDeploy/blob/main/docs/runbooks/minecraft-process-down.md
     labels:
       severity: critical
     notification_settings:
