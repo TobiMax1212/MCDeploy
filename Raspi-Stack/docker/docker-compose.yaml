@@ -1,5 +1,4 @@
 services:
-
   prometheus:
     image: prom/prometheus
     ports:
@@ -42,6 +41,7 @@ services:
 
   ansible:
     build: .
+    container_name: ansible
     working_dir: /ansible
     volumes:
       - ${SSH_DIR}:/root/.ssh:ro
