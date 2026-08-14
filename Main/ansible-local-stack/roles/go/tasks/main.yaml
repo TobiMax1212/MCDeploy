@@ -5,14 +5,14 @@
 
 - name: Go | Download tarball
   ansible.builtin.get_url:
-    url: "https://go.dev/dl/go{{ go_version }}.linux-amd64.tar.gz"
-    dest: "/tmp/go{{ go_version }}.linux-amd64.tar.gz"
+    url: "https://go.dev/dl/go{{ go_version }}.linux-{{ go_arch_map[ansible_architecture] }}.tar.gz"
+    dest: "/tmp/go{{ go_version }}.linux-{{ go_arch_map[ansible_architecture] }}.tar.gz"
     mode: '0644'
   when: not go_binary.stat.exists
 
 - name: Go | Extract to /usr/local
   ansible.builtin.unarchive:
-    src: "/tmp/go{{ go_version }}.linux-amd64.tar.gz"
+    src: "/tmp/go{{ go_version }}.linux-{{ go_arch_map[ansible_architecture] }}.tar.gz"
     dest: /usr/local
     remote_src: true
   when: not go_binary.stat.exists

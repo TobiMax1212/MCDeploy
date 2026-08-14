@@ -1,0 +1,13 @@
+[Unit]
+Description=Prometheus-Node-Exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/node_exporter/node_exporter --web.listen-address=:{{ node_exporter_port }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

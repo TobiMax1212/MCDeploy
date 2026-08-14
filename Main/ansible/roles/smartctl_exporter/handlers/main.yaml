@@ -1,0 +1,5 @@
+---
+- name: Restart smartctl_exporter
+  ansible.builtin.systemd:
+    name: smartctl_exporter
+    state: restarted
