@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DATE="$(date +%Y-%m-%d)"
+DEST="{{ backup_prometheus_dir }}"
+VOLUME="{{ backup_prometheus_volume }}"
+ARCHIVE="${DEST}/prometheus-${DATE}.tar.gz"
+
+SNAP="$(curl -sf -XPOST http://localhost:9090/api/v1/admin/tsdb/snapshot \
+        | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')"
+[ -n "$SNAP" ] || { echo "Snapshot fehlgeschlagen"; exit 1; }
+
+docker run --rm -v "${VOLUME}:/prometheus:ro" -v "${DEST}:/backup" alpine \
+  tar czf "/backup/prometheus-${DATE}.tar.gz" -C /prometheus/snapshots "${SNAP}"
+
+chmod 0444 "${ARCHIVE}"
+
+docker run --rm -v "${VOLUME}:/prometheus" alpine rm -rf "/prometheus/snapshots/${SNAP}"
+
+find "${DEST}" -name 'prometheus-*.tar.gz' -mtime +{{ backup_prometheus_retention_days }} -delete
+echo "OK: ${ARCHIVE}"

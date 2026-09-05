@@ -1,0 +1,37 @@
+---
+- name: Backup | Create backup directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ backup_prometheus_dir }}"
+    - "{{ backup_grafana_dir }}"
+
+- name: Backup | Deploy backup scripts
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    mode: "0750"
+  loop:
+    - prometheus-backup.sh
+    - grafana-backup.sh
+
+- name: Backup | Schedule Prometheus backup (daily 20:00)
+  ansible.builtin.cron:
+    name: "prometheus-backup"
+    minute: "0"
+    hour: "20"
+    job: "/usr/local/bin/prometheus-backup.sh >> /var/log/prometheus-backup.log 2>&1"
+
+- name: Backup | Schedule Grafana backup (every 2 days 03:00)
+  ansible.builtin.cron:
+    name: "grafana-backup"
+    minute: "0"
+    hour: "3"
+    day: "*/2"
+    job: "/usr/local/bin/grafana-backup.sh >> /var/log/grafana-backup.log 2>&1"

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DATE="$(date +%Y-%m-%d)"
+DEST="{{ backup_grafana_dir }}"
+VOLUME="{{ backup_grafana_volume }}"
+CONTAINER="{{ backup_grafana_container }}"
+ARCHIVE="${DEST}/grafana-${DATE}.tar.gz"
+
+docker stop "${CONTAINER}"
+trap 'docker start "${CONTAINER}"' EXIT
+
+docker run --rm -v "${VOLUME}:/var/lib/grafana:ro" -v "${DEST}:/backup" alpine \
+  tar czf "/backup/grafana-${DATE}.tar.gz" -C /var/lib/grafana .
+
+chmod 0444 "${ARCHIVE}"
+find "${DEST}" -name 'grafana-*.tar.gz' -mtime +{{ backup_grafana_retention_days }} -delete
+echo "OK: ${ARCHIVE}"

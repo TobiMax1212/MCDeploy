@@ -1,0 +1,8 @@
+---
+backup_prometheus_dir: /opt/prometheus_backups
+backup_grafana_dir: /opt/grafana_backups
+backup_prometheus_volume: docker_prometheus-data
+backup_grafana_volume: docker_grafana-data
+backup_grafana_container: docker-grafana-1
+backup_prometheus_retention_days: 14
+backup_grafana_retention_days: 30

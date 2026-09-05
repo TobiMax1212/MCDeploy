@@ -6,9 +6,13 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
       - ./prometheus/secrets:/etc/prometheus/secrets:ro
+      - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-admin-api'
     restart: always
+
   grafana:
     image: grafana/grafana
     ports:
@@ -22,6 +26,7 @@ services:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/alerting:/etc/grafana/provisioning/alerting
       - grafana-data:/var/lib/grafana
+
   web_server:
     image: nginx
     volumes:
@@ -29,6 +34,7 @@ services:
     ports:
       - '8080:80'
     restart: always
+
   nginx_exporter:
     image: nginx/nginx-prometheus-exporter:latest
     command:
@@ -66,3 +72,4 @@ services:
 
 volumes:
   grafana-data:
+  prometheus-data:

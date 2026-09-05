@@ -1,8 +1,9 @@
 ---
 - name: Deploy Prometheus Exporter
-  hosts: Local-Stack
+  hosts: local_stack
   become: true
   roles:
+    - go
     - node_exporter
     - smartctl_exporter
-    - ipmi_exporter
+    - backup

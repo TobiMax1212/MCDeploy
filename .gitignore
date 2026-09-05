@@ -3,6 +3,6 @@
 *_ed25519
 !*.pub
 .env
-Raspi-Stack/ansible/group_vars/main_server.yaml
+Main/ansible/inventory/group_vars/main_server.yaml
 .ansible/
 secrets/

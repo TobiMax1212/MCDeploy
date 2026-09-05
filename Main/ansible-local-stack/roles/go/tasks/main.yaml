@@ -1,3 +1,4 @@
+---
 - name: Go | Check if Go is already installed
   ansible.builtin.stat:
     path: /usr/local/go/bin/go
