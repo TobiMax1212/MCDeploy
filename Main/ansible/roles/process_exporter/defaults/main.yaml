@@ -1,0 +1,7 @@
+---
+process_exporter_version: "0.8.7"
+process_exporter_user: "process-exporter"
+process_exporter_group: "process-exporter"
+process_exporter_port: 9256
+process_exporter_install_dir: "/usr/local/bin"
+process_exporter_config_dir: "/etc/process-exporter"
