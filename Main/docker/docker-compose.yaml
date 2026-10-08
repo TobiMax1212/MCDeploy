@@ -13,6 +13,17 @@ services:
       - '--web.enable-admin-api'
     restart: always
 
+  loki:
+    image: grafana/loki:3.7.3
+    container_name: loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki-data:/loki
+    ports: 
+      - "3100:3100"
+
   grafana:
     image: grafana/grafana
     ports:
@@ -25,6 +36,7 @@ services:
     volumes:
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning/alerting:/etc/grafana/provisioning/alerting
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana-data:/var/lib/grafana
 
   web_server:
@@ -73,3 +85,4 @@ services:
 volumes:
   grafana-data:
   prometheus-data:
+  loki-data:

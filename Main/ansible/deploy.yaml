@@ -19,3 +19,9 @@
   become: true
   roles:
     - minecraft
+
+- name: Deploy Log Shipper
+  hosts: TobisServer
+  become: true
+  roles:
+    - alloy
