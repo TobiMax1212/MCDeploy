@@ -1,0 +1,39 @@
+---
+- name: alloy | Add Grafana apt repository
+  deb822_repository:
+    name: grafana
+    types: deb
+    uris: https://apt.grafana.com
+    suites: stable
+    components: main
+    signed_by: https://apt.grafana.com/gpg.key
+    install_python_debian: true
+    state: present
+
+- name: alloy | Install package
+  apt:
+    name: alloy
+    state: present
+    update_cache: true
+
+- name: alloy | Add alloy user to systemd-journal group
+  user:
+    name: alloy
+    groups: systemd-journal
+    append: true
+  notify: alloy | Restart
+
+- name: alloy | Deploy config
+  template:
+    src: config.alloy.j2
+    dest: /etc/alloy/config.alloy
+    owner: root
+    group: alloy
+    mode: '0640'
+  notify: alloy | Restart
+
+- name: alloy | Enable and start service
+  systemd:
+    name: alloy
+    enabled: true
+    state: started

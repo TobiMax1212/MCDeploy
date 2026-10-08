@@ -1,0 +1,38 @@
+// Ziel: Loki auf dem Pi
+loki.write "pi" {
+  endpoint {
+    url = "http://{{ loki_host }}:3100/loki/api/v1/push"
+  }
+}
+
+// Quelle 1: Minecraft-Log
+local.file_match "minecraft" {
+  path_targets = [{
+    __path__ = "/opt/minecraft/logs/latest.log",
+    job      = "minecraft",
+    host     = "{{ inventory_hostname }}",
+  }]
+}
+
+loki.source.file "minecraft" {
+  targets    = local.file_match.minecraft.targets
+  forward_to = [loki.write.pi.receiver]
+}
+
+// Quelle 2: systemd-Journal (enthält auch SSH)
+loki.relabel "journal" {
+  forward_to = []
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+}
+
+loki.source.journal "journal" {
+  forward_to    = [loki.write.pi.receiver]
+  relabel_rules = loki.relabel.journal.rules
+  labels        = {
+    job  = "systemd-journal",
+    host = "{{ inventory_hostname }}",
+  }
+}

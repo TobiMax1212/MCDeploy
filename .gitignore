@@ -1,8 +1,17 @@
+# --- Environment files (keep the .example templates) ---
+.env
+*.env
+!*.env.example
+!example.env
+
+# --- Ansible inventory / host connection details (keep the .example template) ---
+Main/ansible/inventory/group_vars/main_server.yaml
+Main/ansible/inventory/inventory.ini
+!Main/ansible/inventory/group_vars/*.example
+
+# --- Secrets ---
+secrets/
 *.pem
 *_key
 *_ed25519
-!*.pub
-.env
-Main/ansible/inventory/group_vars/main_server.yaml
-.ansible/
-secrets/
+
