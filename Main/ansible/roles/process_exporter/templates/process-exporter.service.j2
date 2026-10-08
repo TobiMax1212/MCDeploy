@@ -1,0 +1,19 @@
+[Unit]
+Description=Prometheus Process Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User={{ process_exporter_user }}
+Group={{ process_exporter_group }}
+Type=simple
+ExecStart={{ process_exporter_install_dir }}/process-exporter \
+    --config.path={{ process_exporter_config_dir }}/config.yml \
+    --web.listen-address=:{{ process_exporter_port }}
+Restart=on-failure
+RestartSec=5
+AmbientCapabilities=CAP_SYS_PTRACE CAP_DAC_READ_SEARCH
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

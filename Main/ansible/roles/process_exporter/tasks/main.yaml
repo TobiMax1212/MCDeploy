@@ -1,0 +1,85 @@
+---
+- name: Create process-exporter group
+  ansible.builtin.group:
+    name: "{{ process_exporter_group }}"
+    system: true
+    state: present
+
+- name: Create process-exporter user
+  ansible.builtin.user:
+    name: "{{ process_exporter_user }}"
+    group: "{{ process_exporter_group }}"
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+    state: present
+
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ process_exporter_config_dir }}"
+    state: directory
+    owner: "{{ process_exporter_user }}"
+    group: "{{ process_exporter_group }}"
+    mode: "0755"
+
+- name: Download process-exporter archive
+  ansible.builtin.get_url:
+    url: "https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/process-exporter-{{ process_exporter_version }}.linux-amd64.tar.gz"
+    dest: "/tmp/process-exporter-{{ process_exporter_version }}.tar.gz"
+    mode: "0644"
+
+- name: Extract process-exporter binary
+  ansible.builtin.unarchive:
+    src: "/tmp/process-exporter-{{ process_exporter_version }}.tar.gz"
+    dest: "/tmp"
+    remote_src: true
+    creates: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64/process-exporter"
+
+- name: Install process-exporter binary
+  ansible.builtin.copy:
+    src: "/tmp/process-exporter-{{ process_exporter_version }}.linux-amd64/process-exporter"
+    dest: "{{ process_exporter_install_dir }}/process-exporter"
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+  notify: Restart process-exporter
+
+- name: Deploy process-exporter config
+  ansible.builtin.template:
+    src: process-exporter.yml.j2
+    dest: "{{ process_exporter_config_dir }}/config.yml"
+    owner: "{{ process_exporter_user }}"
+    group: "{{ process_exporter_group }}"
+    mode: "0644"
+  notify: Restart process-exporter
+
+- name: Ensure process-exporter is not masked
+  ansible.builtin.systemd:
+    name: process-exporter
+    masked: false
+  failed_when: false
+
+- name: Deploy systemd unit
+  ansible.builtin.template:
+    src: process-exporter.service.j2
+    dest: /etc/systemd/system/process-exporter.service
+    mode: "0644"
+  notify:
+    - Reload systemd
+    - Restart process-exporter
+
+- name: Force systemd daemon-reload before continuing
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable and start process-exporter
+  ansible.builtin.systemd:
+    name: process-exporter
+    enabled: true
+    state: started
+
+- name: Clean up downloaded archive
+  ansible.builtin.file:
+    path: "/tmp/process-exporter-{{ process_exporter_version }}.tar.gz"
+    state: absent
